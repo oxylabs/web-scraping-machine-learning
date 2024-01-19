@@ -10,7 +10,7 @@ $ python3 -m pip install requests_html beautifulsoup4
 ```
 
 ```bash
-$ python3 -m pip install pandas numpy matplotlib seaborn tensorflow sklearn
+$ python3 -m pip install pandas numpy matplotlib seaborn tensorflow scikit-learn
 ```
 
 ## Extracting the data
@@ -31,7 +31,7 @@ Next, we use Pandas for loading the data in a DataFrame for further processing.
 In the next cell, create a session and get the response from your target URL.
 
 ```python
-url = 'http://your-target-url'
+url = 'https://finance.yahoo.com/quote/AAPL/history?p=AAPL'
 session = HTMLSession()
 r = session.get(url)
 ```
@@ -54,7 +54,8 @@ for row in rows:
         'Close':row.xpath('.//td[5]/span/text()')[0],
         'Adj Close':row.xpath('.//td[6]/span/text()')[0],
         'Volume':row.xpath('.//td[7]/span/text()')[0]
-    }) 
+    })
+df = pd.DataFrame(data)
 ```
 
 The results of web scraping are being stored in the variable data. To understand why such actions are taken, we must consider that these variables are a list of dictionaries that can be easily converted to a data frame. Furthermore, completing the steps mentioned above will also help to complete the vital step of data labeling.
@@ -124,6 +125,7 @@ df['Adj Close'].plot()
 plt.ylabel('Adj Close')
 plt.xlabel(None)
 plt.title('Closing Price of AAPL')
+plt.show()
 ```
 
 ![](https://images.prismic.io/oxylabs-sm/NTA2ZGQxZmUtNWZkMi00ODQzLTljMTAtMGUyNTEyZGJiZGZj_closing_price_aapl.png?auto=compress,format&rect=0,0,889,351&w=889&h=351&fm=webp&dpr=2&q=50)
@@ -160,7 +162,7 @@ from sklearn.model_selection import TimeSeriesSplit
 tscv = TimeSeriesSplit(n_splits=10) 
 for train_index, test_index in tscv.split(X):
     X_train, X_test = X[train_index], X[test_index]
-    y_train, y_test = y[train_index], y[test_index]
+     y_train, y_test = y.iloc[train_index], y.iloc[test_index]
 ```
 
 Our approach for today will be creating a neural network that uses an LSTM or a Long Short-Term Memory layer. LSTM expects a 3-dimensional input with information about the batch size, timesteps, and input dimensions. We need to reshape the features as follows:
@@ -203,7 +205,7 @@ Finally, let’s plot the actual values and predicted values with the following:
 
 ```python
 plt.figure(figsize=(15, 6))
-plt.plot(y_test, label='Actual Value')
+plt.plot(y_test.values, label='Actual Value')
 plt.plot(y_pred, label='Predicted Value')
 plt.ylabel('Adjusted Close (Scaled)')
 plt.xlabel('Time Scale')

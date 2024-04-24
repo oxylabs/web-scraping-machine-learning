@@ -14,7 +14,7 @@ $ python3 -m pip install requests_html beautifulsoup4
 ```
 
 ```bash
-$ python3 -m pip install pandas numpy matplotlib seaborn tensorflow scikit-learn
+$ python3 -m pip install pandas numpy matplotlib seaborn tensorflow scikit-learn keras
 ```
 
 ## Extracting the data
@@ -35,7 +35,7 @@ Next, we use Pandas for loading the data in a DataFrame for further processing.
 In the next cell, create a session and get the response from your target URL.
 
 ```python
-url = 'https://finance.yahoo.com/quote/AAPL/history?p=AAPL'
+url = 'https://finance.yahoo.com/quote/AAPL/history?p=AAPL&guccounter=1&period1=1556113078&period2=1713965616'
 session = HTMLSession()
 r = session.get(url)
 ```
@@ -51,14 +51,14 @@ for row in rows:
         continue
     data.append({
         'Symbol':symbol,
-        'Date':row.xpath('.//td[1]/span/text()')[0],
-        'Open':row.xpath('.//td[2]/span/text()')[0],
-        'High':row.xpath('.//td[3]/span/text()')[0],
-        'Low':row.xpath('.//td[4]/span/text()')[0],
-        'Close':row.xpath('.//td[5]/span/text()')[0],
-        'Adj Close':row.xpath('.//td[6]/span/text()')[0],
-        'Volume':row.xpath('.//td[7]/span/text()')[0]
-    })
+        'Date':row.xpath('.//td[1]/text()')[0],
+        'Open':row.xpath('.//td[2]/text()')[0],
+        'High':row.xpath('.//td[3]/text()')[0],
+        'Low':row.xpath('.//td[4]/text()')[0],
+        'Close':row.xpath('.//td[5]/text()')[0],
+        'Adj Close':row.xpath('.//td[6]/text()')[0],
+        'Volume':row.xpath('.//td[7]/text()')[0]
+    }) 
 df = pd.DataFrame(data)
 ```
 
@@ -118,7 +118,7 @@ First, import the packages and set the plot styles:
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set_style('darkgrid')
-plt.style.use("ggplot")
+plt.style.use('ggplot')
 ```
 
 Next, enter the following lines to plot the `Adj Close`, which is the adjusted closing price
